@@ -284,7 +284,11 @@ class Maven implements BuildTool {
 
   void sonarQube(){
     script.withSonarQubeEnv('sonarcloud.io-scm') {
-      mvn "${script.env.SONAR_MAVEN_GOAL} -Dsonar.organization=scm-manager -Dsonar.branch.name=${script.env.BRANCH_NAME} -Dsonar.branch.target=develop"
+      String sonar = "${script.env.SONAR_MAVEN_GOAL} -Dsonar.organization=scm-manager -Dsonar.branch.name=${script.env.BRANCH_NAME}"
+      if (script.env.BRANCH_NAME != "master") {
+        sonar += " -Dsonar.branch.target=develop"
+      }
+      mvn sonar
     }
   }
 
