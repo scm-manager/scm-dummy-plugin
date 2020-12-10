@@ -46,15 +46,12 @@ pipeline {
         sh 'git reset --hard origin/master'
         sh "git merge --ff-only ${env.BRANCH_NAME}"
 
-        // TODO remove
-        sh "git tag -d ${releaseVersion} || true"
         // set tag
         tag releaseVersion
       }
     }
 
-    // TODO
-    /*stage('Build') {
+    stage('Build') {
       steps {
         script {
           buildTool.build()
@@ -76,7 +73,7 @@ pipeline {
           buildTool.sonarQube()
         }
       }
-    }*/
+    }
 
     stage('Deployment') {
       when {
@@ -123,6 +120,7 @@ pipeline {
               sh "mv ${buildTool.releaseDescriptorPath()} ${filename}"
               sh "git add ${filename}"
               commit "${pluginName}: release ${releaseVersion}"
+              authGit 'cesmarvin-github', 'push'
             }
           }
         }
