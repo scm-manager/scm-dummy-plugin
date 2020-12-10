@@ -120,7 +120,7 @@ pipeline {
               sh "mv ${buildTool.releaseDescriptorPath()} ${filename}"
               sh "git add ${filename}"
               commit "${pluginName}: release ${releaseVersion}"
-              authGit 'cesmarvin-github', 'push HEAD:master'
+              authGit 'cesmarvin-github', 'push origin HEAD:master'
             }
           }
         }
