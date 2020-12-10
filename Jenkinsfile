@@ -46,12 +46,15 @@ pipeline {
         sh 'git reset --hard origin/master'
         sh "git merge --ff-only ${env.BRANCH_NAME}"
 
+        // TODO remove
+        sh "git tag -d ${releaseVersion} || true"
         // set tag
         tag releaseVersion
       }
     }
 
-    stage('Build') {
+    // TODO
+    /*stage('Build') {
       steps {
         script {
           buildTool.build()
@@ -73,7 +76,7 @@ pipeline {
           buildTool.sonarQube()
         }
       }
-    }
+    }*/
 
     stage('Deployment') {
       when {
