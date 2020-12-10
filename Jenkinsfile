@@ -46,6 +46,8 @@ pipeline {
         sh 'git reset --hard origin/master'
         sh "git merge --ff-only ${env.BRANCH_NAME}"
 
+        // TODO remove
+        sh "git tag -d ${releaseVersion} || true"
         // set tag
         tag releaseVersion
       }
@@ -230,14 +232,13 @@ class Gradle implements BuildTool {
 
   void sonarQube(){
     script.withSonarQubeEnv('sonarcloud.io-scm') {
-      // TODO
+      gradle "sonarqube"
     }
   }
 
   void deploy() {
-    script.withCredentials([usernamePassword(credentialsId: 'maven.scm-manager.org', passwordVariable: 'serverPassword', usernameVariable: 'serverUsername')]) {
-      // TODO pass credentials
-      gradle 'publish'
+    script.withCredentials([script.usernamePassword(credentialsId: 'maven.scm-manager.org', passwordVariable: 'serverPassword', usernameVariable: 'serverUsername')]) {
+      gradle "publish -PpackagesScmManagerUsername=${script.env.serverUsername} -PpackagesScmManagerPassword=${script.env.serverPassword}"
     }
   }
 
@@ -279,7 +280,7 @@ class Maven implements BuildTool {
 
   void build() {
     mvn 'clean package -DskipTests'
-    script.archive 'target/*.smp'
+    script.archiveArtifacts 'target/*.smp'
   }
 
   void sonarQube(){
@@ -289,25 +290,29 @@ class Maven implements BuildTool {
   }
 
   void deploy() {
-    script.withCredentials([usernamePassword(credentialsId: 'maven.scm-manager.org', passwordVariable: 'serverPassword', usernameVariable: 'serverUsername')]) {
-      script.writeFile file: "settings.xml", text: """
-        <server>
-          <id>packages.scm-manager.org</id>
-          <username>${serverUsername}</username>
-          <password>${serverPassword}</password>
-        </server>
+    script.withCredentials([script.usernamePassword(credentialsId: 'maven.scm-manager.org', passwordVariable: 'serverPassword', usernameVariable: 'serverUsername')]) {
+      script.writeFile file: ".m2/settings.xml", text: """
+      <settings>
+        <servers>
+          <server>
+            <id>packages.scm-manager.org</id>
+            <username>${script.env.serverUsername}</username>
+            <password>${script.env.serverPassword}</password>
+          </server>
+        </servers>
+      </settings>
       """
     }
     
-    mvn '-DaltReleaseDeploymentRepository=packages.scm-manager.org::default::https://packages.scm-manager.org/repository/plugin-releases/ -DaltSnapshotDeploymentRepository=packages.scm-manager.org::default::https://packages.scm-manager.org/repository/plugin-snapshots/ -s settings.xml deploy'
+    mvn '-DskipTests -DaltReleaseDeploymentRepository=packages.scm-manager.org::default::https://packages.scm-manager.org/repository/plugin-releases/ -DaltSnapshotDeploymentRepository=packages.scm-manager.org::default::https://packages.scm-manager.org/repository/plugin-snapshots/ -s .m2/settings.xml deploy'
   }
 
   void mvn(String command) {
-    script.sh "./mvnw --batch-mode -U -e  -DperformRelease -Dmaven.javadoc.failOnError=false ${command}"
+    script.sh "./mvnw --batch-mode -U -e  -DperformRelease -Dlicense.useDefaultExcludes=true -Dmaven.javadoc.failOnError=false ${command}"
   }
 
   String releaseDescriptorPath() {
-    return "${env.WORKSPACE}/target/release.yaml"
+    return "${script.env.WORKSPACE}/target/release.yaml"
   }
 
   void setVersionToNextSnapshot() {
