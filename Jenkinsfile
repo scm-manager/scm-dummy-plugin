@@ -53,7 +53,8 @@ pipeline {
       }
     }
 
-    stage('Build') {
+    // TODO
+    /*stage('Build') {
       steps {
         script {
           buildTool.build()
@@ -75,7 +76,7 @@ pipeline {
           buildTool.sonarQube()
         }
       }
-    }
+    }*/
 
     stage('Deployment') {
       when {
@@ -121,7 +122,7 @@ pipeline {
             dir("content/plugins/${pluginName}/releases") {
               sh "mv ${buildTool.releaseDescriptorPath()} ${filename}"
               sh "git add ${filename}"
-              commit "${pluginName}: release ${version}"
+              commit "${pluginName}: release ${releaseVersion}"
             }
           }
         }
