@@ -211,21 +211,21 @@ class Gradle implements BuildTool {
   }
 
   void setVersion(String version) {
-    gradlde "setVersion --newVersion=${version}"
+    gradle "setVersion --newVersion=${version}"
     gradlde 'fix'
     script.sh 'git add gradle.properties package.json'
   }
 
   void check() {
-    gradlde 'check'
+    gradle 'check'
     // update timestamp to avoid rerun tests again and fix junit-plugin:
     // ERROR: Test reports were found but none of them are new
-    script.sh 'touch build/test-results/*/*.xml'
+    script.sh 'touch build/test-results/*/*.xml || true'
     script.junit allowEmptyResults: true, testResults: 'build/test-results/*/*.xml'
   }
 
   void build() {
-    script.sh './gradlew build -xtest --console=verbose'
+    gradle 'build -xtest'
     script.archiveArtifacts artifacts: 'build/libs/*.smp'
   }
 
@@ -286,7 +286,7 @@ class Maven implements BuildTool {
     script.withSonarQubeEnv('sonarcloud.io-scm') {
       String sonar = "${script.env.SONAR_MAVEN_GOAL} -Dsonar.organization=scm-manager -Dsonar.branch.name=${script.env.BRANCH_NAME}"
       if (script.env.BRANCH_NAME != "master") {
-        sonar += " -Dsonar.branch.target=develop"
+        sonar += " -Dsonar.branch.target=master"
       }
       mvn sonar
     }
