@@ -22,19 +22,25 @@
  * SOFTWARE.
  */
 
-package com.cloudogu.scm;
+plugins {
+  id 'org.scm-manager.smp' version '0.2.0'
+}
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+dependencies {
+  
+}
 
-@Path("v2/sample")
-public class SampleResource {
-  @GET
-  @Produces(MediaType.TEXT_PLAIN)
-  public String sample() {
-    return "Sample";
+scmPlugin {
+  scmVersion = "2.9.0"
+  displayName = "Dummy Plugin"
+  description = "New dummy plugin to test the release pipeline with gradle and maven"
+  author = "Cloudogu GmbH"
+  category = "Testing"
+
+  openapi {
+    packages = [
+      "com.cloudogu.scm"
+    ]
   }
 
 }

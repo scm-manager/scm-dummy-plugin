@@ -242,4 +242,7 @@ Temporary Items
 
 *.iml
 .idea/
+.gradle
+build
 
+!gradle/wrapper/*
