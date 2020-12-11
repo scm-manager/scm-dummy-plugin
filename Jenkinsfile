@@ -70,6 +70,7 @@ pipeline {
 
     stage('SonarQube') {
       steps {
+        // TODO we have to fetch the integration branch
         script {
           buildTool.sonarQube()
         }
@@ -213,7 +214,7 @@ class Gradle implements BuildTool {
 
   void setVersion(String version) {
     gradle "setVersion --newVersion=${version}"
-    gradlde 'fix'
+    gradle 'fix'
     script.sh 'git add gradle.properties package.json'
   }
 
