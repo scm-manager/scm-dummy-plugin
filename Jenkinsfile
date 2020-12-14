@@ -248,7 +248,7 @@ class Gradle implements BuildTool {
   }
 
   String releaseDescriptorPath() {
-    return "${script.env.WORKSPACE}/build/lib/release.yaml"
+    return "${script.env.WORKSPACE}/build/libs/release.yaml"
   }
 
   void setVersionToNextSnapshot() {
