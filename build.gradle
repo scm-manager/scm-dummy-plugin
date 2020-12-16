@@ -23,11 +23,12 @@
  */
 
 plugins {
-  id 'org.scm-manager.smp' version '0.2.0'
+  id 'org.scm-manager.smp' version '0.3.0'
+  // id "com.dorongold.task-tree" version "1.5"
 }
 
 dependencies {
-  
+
 }
 
 scmPlugin {
