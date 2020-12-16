@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 class SampleResourceTest {
 
   @Test
-  void failing() {
-    Assertions.assertThat("x").isEqualTo("u");
+  void ok() {
+    Assertions.assertThat(6*7).isEqualTo(42);
   }
 }
