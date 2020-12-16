@@ -22,15 +22,10 @@
  * SOFTWARE.
  */
 
-package com.cloudogu.scm;
+export const add = (a: number, b: number) => {
+  return a + b;
+};
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-class SampleResourceTest {
-
-  @Test
-  void success() {
-    SampleResource resource = new SampleResource();
-    Assertions.assertThat(resource.sample()).isEqualTo("Sample");
-  }
-}
+export const sub = (a: number, b: number) => {
+  return a - b;
+};

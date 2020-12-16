@@ -37,4 +37,11 @@ public class SampleResource {
     return "Sample";
   }
 
+  public String notCovered(boolean some) {
+    if (some) {
+      return "one";
+    }
+    return "two";
+  }
+
 }
